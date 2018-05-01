@@ -1,16 +1,19 @@
-////////////////////////////////////////////////////////////////////////////////
-//      __________  _____
-//     / ____/ __ \/ ___/
-//    / /_  / /_/ /\__ \ 
-//   / __/ / ____/___/ /
-//  /_/ (_)_/  (_)____(_)  Foot Presto Switch
-//
-// Pedal Switch for playing FPS games
-//
-// Author: Daniel Jose Viana, danjovic@hotmail.com
+/*
+  _____  _       _                      _                      _   _  __             _____            _             _ _           
+ |  __ \(_)     (_)                    | |                    | | | |/ /            / ____|          | |           | | |          
+ | |  | |_  __ _ _ ___ _ __   __ _ _ __| | __   ___  ___ _   _| | | ' / ___ _   _  | |     ___  _ __ | |_ _ __ ___ | | | ___ _ __ 
+ | |  | | |/ _` | / __| '_ \ / _` | '__| |/ /  / _ \/ __| | | | | |  < / _ \ | | | | |    / _ \| '_ \| __| '__/ _ \| | |/ _ \ '__|
+ | |__| | | (_| | \__ \ |_) | (_| | |  |   <  | (_) \__ \ |_| |_| | . \  __/ |_| | | |___| (_) | | | | |_| | | (_) | | |  __/ |   
+ |_____/|_|\__, |_|___/ .__/ \__,_|_|  |_|\_\  \___/|___/\__,_(_) |_|\_\___|\__, |  \_____\___/|_| |_|\__|_|  \___/|_|_|\___|_|   
+            __/ |     | |                                                    __/ |                                                
+           |___/      |_|                                                   |___/      
+           */
+// Original Author: Daniel Jose Viana, danjovic@hotmail.com
 //
 // Version 0.6 - March, 2016 - Basic Release
 
+//Edited for osu! by kuwoh
+//note: removed some uneccesarry stuff only Z and X keys are present (add more if you need to)
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,13 +22,11 @@
 //   | |) / -_)  _| | ' \| |  _| / _ \ ' \(_-<
 //   |___/\___|_| |_|_||_|_|\__|_\___/_||_/__/
 //
-#define _Pin_Left_footswitch    2
-#define _Pin_Middle_footswitch  1
-#define _Pin_Right_footswitch   0
+#define _Pin_Left_switch    0
+#define _Pin_Right_switch   2
 
-#define _Key_Left_footswitch KEY_C   // Crouch
-#define _Key_Middle_footswitch KEY_R // Reload
-#define _Key_Right_footswitch KEY_V  // Melee
+#define _Key_Left_switch KEY_Z   // LEFT CLICK
+#define _Key_Right_switch KEY_X  // RIGHT "
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +46,7 @@
 //
 
 uint8_t lastkeys = 0;
-uint8_t footkeys;
+uint8_t keys;
 
 ////////////////////////////////////////////////////////////////////////////////
 //    ___             _   _
@@ -66,14 +67,11 @@ uint8_t footkeys;
 void setup() {
 
   // Set pullups for pedal switches and define them as inputs
-  digitalWrite(_Pin_Left_footswitch, HIGH);
-  pinMode(_Pin_Left_footswitch, INPUT);
+  digitalWrite(_Pin_Left_switch, HIGH);
+  pinMode(_Pin_Left_switch, INPUT);
 
-  digitalWrite(_Pin_Middle_footswitch, HIGH);
-  pinMode(_Pin_Middle_footswitch, INPUT);
-
-  digitalWrite(_Pin_Right_footswitch, HIGH);
-  pinMode(_Pin_Right_footswitch, INPUT);
+  digitalWrite(_Pin_Right_switch, HIGH);
+  pinMode(_Pin_Right_switch, INPUT);
 
   // This is needed before start sending keys
   DigiKeyboard.sendKeyStroke(0);
@@ -95,13 +93,12 @@ void loop() {
   // Sample footkeys. We have 3 keys
   footkeys = 0;
 
-  if ((digitalRead(_Pin_Left_footswitch) == 0))   footkeys |= (1 << _Pin_Left_footswitch);
-  if ((digitalRead(_Pin_Middle_footswitch) == 0)) footkeys |= (1 << _Pin_Middle_footswitch);
-  if ((digitalRead(_Pin_Right_footswitch) == 0))  footkeys |= (1 << _Pin_Right_footswitch);
+  if ((digitalRead(_Pin_Left_switch) == 0))   keys |= (1 << _Pin_Left_switch);
+  if ((digitalRead(_Pin_Right_switch) == 0))  keys |= (1 << _Pin_Right_switch);
 
   // if switches changed state send new report to host
-  if (footkeys != lastkeys) {                // on change
-    lastkeys = footkeys;                     // update key state
+  if (keys != lastkeys) {                // on change
+    lastkeys = keys;                     // update key state
 
     // Sync with the next interrupt
     while (!usbInterruptIsReady()) {
@@ -115,9 +112,8 @@ void loop() {
     // Now set active keys in report
     if (footkeys) {
       i = 1; // point to first key from report
-      if (footkeys & (1 << _Pin_Left_footswitch))   DigiKeyboard.reportBuffer[i++] = _Key_Left_footswitch;
-      if (footkeys & (1 << _Pin_Middle_footswitch))  DigiKeyboard.reportBuffer[i++] = _Key_Middle_footswitch;
-      if ( footkeys & (1 << _Pin_Right_footswitch))  DigiKeyboard.reportBuffer[i++] = _Key_Right_footswitch;
+      if (keys & (1 << _Pin_Left_switch))   DigiKeyboard.reportBuffer[i++] = _Key_Left_switch;
+      if (keys & (1 << _Pin_Right_switch))  DigiKeyboard.reportBuffer[i++] = _Key_Right_switch;
     }
 
     // Now set to send the keystrokes in the next USB interrupt
@@ -128,8 +124,8 @@ void loop() {
     }
   }
 
-  // cycle each 10ms
-  DigiKeyboard.delay(10);
+  // cycle each 1ms
+  DigiKeyboard.delay(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
