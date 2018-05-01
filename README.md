@@ -1,6 +1,5 @@
-# F.P.S. Foot Presto Switch
+# Digispark osu! key controller
 
-Pedal Switch for playing FPS games
+Was forked from F.P.S (Foot Presto Switch)
 
-This project provides an USB keyboard emulator to be activated by feet either individually or simultaneously.
-It is based on a DigisPark board with updated DigiKeyboard.h library.
+It uses a modified/updated DigiKeyboard.h that allows for keyholds. Check more of the F.P.S project here: https://hackaday.io/project/10446-fps-foot-presto-switch
