@@ -91,7 +91,7 @@ void loop() {
   uint8_t i; // index for keystrokes
 
   // Sample footkeys. We have 3 keys
-  footkeys = 0;
+  keys = 0;
 
   if ((digitalRead(_Pin_Left_switch) == 0))   keys |= (1 << _Pin_Left_switch);
   if ((digitalRead(_Pin_Right_switch) == 0))  keys |= (1 << _Pin_Right_switch);
@@ -110,7 +110,7 @@ void loop() {
     memset( DigiKeyboard.reportBuffer , 0, sizeof( DigiKeyboard.reportBuffer));
 
     // Now set active keys in report
-    if (footkeys) {
+    if (keys) {
       i = 1; // point to first key from report
       if (keys & (1 << _Pin_Left_switch))   DigiKeyboard.reportBuffer[i++] = _Key_Left_switch;
       if (keys & (1 << _Pin_Right_switch))  DigiKeyboard.reportBuffer[i++] = _Key_Right_switch;
